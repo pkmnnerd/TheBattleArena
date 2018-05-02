@@ -23,11 +23,10 @@ public class PlayerController : NetworkBehaviour
             return;
         }
        
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 150.0f;
-        var z = Input.GetAxis("Vertical") * Time.deltaTime * 3.0f;
-
-        transform.Rotate(0, x, 0);
-        transform.Translate(0, 0, z);
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 5.0f;
+        var z = Input.GetAxis("Vertical") * Time.deltaTime * 5.0f;
+        
+        transform.Translate(x, 0, z);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -57,7 +56,7 @@ public class PlayerController : NetworkBehaviour
 
         float _yRot = Input.GetAxisRaw("Mouse X");
 
-        Vector3 _rotation = new Vector3(0f, _yRot, 0f) * 3f;
+        Vector3 _rotation = new Vector3(0f, _yRot, 0f) * 0.5f;
 
         //Apply rotation
         rotation = _rotation;
@@ -65,7 +64,7 @@ public class PlayerController : NetworkBehaviour
         //Calculate camera rotation as a 3D vector (turning around)
         float _xRot = Input.GetAxisRaw("Mouse Y");
 
-        float _cameraRotationX = _xRot * 3f;
+        float _cameraRotationX = _xRot * 0.5f;
 
         //Apply camera rotation
         cameraRotationX = _cameraRotationX;
@@ -95,7 +94,10 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-
+        if (commander)
+        {
+            //hide yourself
+        }
         //GetComponent<MeshRenderer>().material.color = Color.green;
         //if (team == 0)
         //{

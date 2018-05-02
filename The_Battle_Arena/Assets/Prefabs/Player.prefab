@@ -87,7 +87,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1622308980406792
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +114,6 @@ GameObject:
   - component: {fileID: 20895858118850938}
   - component: {fileID: 124036047798429236}
   - component: {fileID: 81762865502057864}
-  - component: {fileID: 114017682688528252}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -420,38 +419,6 @@ AudioListener:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1725541719190200}
   m_Enabled: 0
---- !u!114 &114017682688528252
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1725541719190200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 222
-    i1: 40
-    i2: 171
-    i3: 213
-    i4: 167
-    i5: 181
-    i6: 105
-    i7: 228
-    i8: 202
-    i9: 251
-    i10: 135
-    i11: 133
-    i12: 153
-    i13: 176
-    i14: 72
-    i15: 236
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
 --- !u!114 &114043016093525778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -595,9 +562,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  commander: 0
   bulletPrefab: {fileID: 1513113821152016, guid: d4b2ae4dfc9d55440bb34a2d7574856c,
     type: 2}
   bulletSpawn: {fileID: 4153824343714842}
+  cameraRotationLimit: 85
 --- !u!114 &114902400959852164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -631,7 +600,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1508003489051806}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4a08e0f1a4479f4b8101704a3bb7418, type: 3}
   m_Name: 
