@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
-public class PlayerController : NetworkBehaviour {
+public class MinionController : MonoBehaviour {
 
-    // Use this for initialization
-    void Start () {
+	// Use this for initialization
+	void Start () {
 		
 	}
 	

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -969,7 +969,11 @@ MonoBehaviour:
   m_PlayerSpawnMethod: 0
   m_OfflineScene: Lobby
   m_OnlineScene: 
-  m_SpawnPrefabs: []
+  m_SpawnPrefabs:
+  - {fileID: 1004275352864008, guid: de28abd5a7b569e4cafb878599b048ec, type: 2}
+  - {fileID: 1990851437063140, guid: 53885c92facd50b4bb328e8691154de4, type: 2}
+  - {fileID: 1513113821152016, guid: d4b2ae4dfc9d55440bb34a2d7574856c, type: 2}
+  - {fileID: 1531298467342816, guid: 86940896990022c438fbfbb8de7e501a, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -1036,6 +1040,11 @@ MonoBehaviour:
   m_LobbyScene: Lobby
   m_PlayScene: Main
   lobbySlots: []
+  lobbyPrefab: {fileID: 1506321044033726, guid: 96a01604eec5fd54ca7f10326e972df4,
+    type: 2}
+  fpsPrefab: {fileID: 1004275352864008, guid: de28abd5a7b569e4cafb878599b048ec, type: 2}
+  commanderPrefab: {fileID: 1990851437063140, guid: 53885c92facd50b4bb328e8691154de4,
+    type: 2}
 --- !u!4 &458143491
 Transform:
   m_ObjectHideFlags: 0

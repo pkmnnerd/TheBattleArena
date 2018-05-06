@@ -13,11 +13,7 @@ public class NMScript : NetworkManager {
     {
         Debug.Log("hello");
         GameObject player = (GameObject)Instantiate(playerPrefab, new Vector3(0,0,0), new Quaternion(0,0,0,0));
-        player.GetComponent<PlayerController>().team = playerNumber % 2;
-        if(playerNumber < 2)
-        {
-            player.GetComponent<PlayerController>().commander = false;
-        }
+        player.GetComponent<FpsPlayerController>().team = playerNumber % 2;
         playerNumber++;
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
     }
