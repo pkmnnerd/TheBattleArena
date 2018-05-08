@@ -52,13 +52,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318677846191996}
-  m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
+  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4477460368484426}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: -90, z: 0}
 --- !u!4 &4477460368484426
 Transform:
   m_ObjectHideFlags: 1
@@ -131,9 +131,17 @@ MonoBehaviour:
   selectionPrefab: {fileID: 1875185274250166, guid: 9cc43525074994243a54b6bb23d76813,
     type: 2}
   canvas: {fileID: 0}
-  minHeight: 5
+  minHeight: 3
   maxHeight: 30
   zoomSpeed: 10
+  minionPrefab: {fileID: 1531298467342816, guid: 86940896990022c438fbfbb8de7e501a,
+    type: 2}
+  movementMask:
+    serializedVersion: 2
+    m_Bits: 256
+  resourceMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &114973558432423840
 MonoBehaviour:
   m_ObjectHideFlags: 1

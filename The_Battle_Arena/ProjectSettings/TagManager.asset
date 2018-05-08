@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - LobbyPlayer
+  - Red
+  - Blue
+  - Minion
   layers:
   - Default
   - TransparentFX
@@ -14,8 +17,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Ground
+  - Resource
   - 
   - 
   - 

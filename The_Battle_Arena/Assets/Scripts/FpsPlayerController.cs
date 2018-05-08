@@ -38,7 +38,15 @@ public class FpsPlayerController : NetworkBehaviour
         {
             return;
         }
-       
+        if (team == 0)
+        {
+            CmdColorChange(transform.gameObject, Color.red);
+        }
+        else
+        {
+            CmdColorChange(transform.gameObject, Color.blue);
+        }
+
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * 5.0f;
         var z = Input.GetAxis("Vertical") * Time.deltaTime * 5.0f;
         
@@ -112,8 +120,20 @@ public class FpsPlayerController : NetworkBehaviour
             cam.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
         }
     }
-   
-    
+
+    [Command]
+    void CmdColorChange(GameObject obj, Color toChange)
+    {
+        RpcColorChange(obj, toChange);
+    }
+
+    [ClientRpc]
+    void RpcColorChange(GameObject obj, Color toChange)
+    {
+        obj.GetComponent<MeshRenderer>().material.color = toChange;
+    }
+
+
 }
 
 

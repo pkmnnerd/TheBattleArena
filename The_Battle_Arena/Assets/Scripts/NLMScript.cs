@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public class NLMScript : NetworkLobbyManager {
 
@@ -79,10 +80,12 @@ public class NLMScript : NetworkLobbyManager {
             if (lPlayer.role < 4)
             {
                 gPlayer.team = 0;
+                gamePlayer.transform.position = new Vector3(0, 0, -65);
             }
             else
             {
                 gPlayer.team = 1;
+                gamePlayer.transform.position = new Vector3(0, 0, 65);
             }
         }   
         else
@@ -93,11 +96,14 @@ public class NLMScript : NetworkLobbyManager {
             {
                 gPlayer.team = 0;
                 gPlayer.GetComponent<MeshRenderer>().material.color = Color.red;
+                gPlayer.GetComponent<NavMeshAgent>().Warp(new Vector3((lPlayer.role - 2) * 5, 0, -60));
             }
             else
             {
                 gPlayer.team = 1;
                 gPlayer.GetComponent<MeshRenderer>().material.color = Color.blue;
+                gPlayer.GetComponent<NavMeshAgent>().Warp(new Vector3((lPlayer.role - 6) * 5, 0, 60));
+                gPlayer.transform.Rotate(0,180,0);
             }
         }
 

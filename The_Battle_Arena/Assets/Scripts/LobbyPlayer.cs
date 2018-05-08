@@ -9,6 +9,7 @@ public class LobbyPlayer : NetworkLobbyPlayer {
     [SyncVar]
     public string playerName;
 
+    [SyncVar]
     public int team;
 
     private InputField nameField;
