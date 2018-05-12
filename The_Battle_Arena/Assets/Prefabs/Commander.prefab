@@ -134,7 +134,7 @@ MonoBehaviour:
   minHeight: 3
   maxHeight: 30
   zoomSpeed: 10
-  minionPrefab: {fileID: 1531298467342816, guid: 86940896990022c438fbfbb8de7e501a,
+  minionPrefab: {fileID: 1531298467342816, guid: c504b4accb800bf44b2e0e2105ce34d6,
     type: 2}
   movementMask:
     serializedVersion: 2
@@ -142,6 +142,7 @@ MonoBehaviour:
   resourceMask:
     serializedVersion: 2
     m_Bits: 512
+  oreCount: 0
 --- !u!114 &114973558432423840
 MonoBehaviour:
   m_ObjectHideFlags: 1
