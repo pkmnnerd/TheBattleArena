@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class NLMScript : NetworkLobbyManager {
 
@@ -34,6 +35,11 @@ public class NLMScript : NetworkLobbyManager {
         //SceneManager.LoadScene("Lobby");
         networkPort = 7777;
         networkAddress = "localhost";
+        if (GameObject.Find("Address Input").GetComponent<Text>().text != "")
+        {
+            networkAddress = GameObject.Find("Address Input").GetComponent<Text>().text;
+        }
+        Debug.Log(networkAddress);
         StartClient();
         GameObject.Find("LobbyManager").GetComponent<LobbyScript>().SwitchToNameSelect();
     }
