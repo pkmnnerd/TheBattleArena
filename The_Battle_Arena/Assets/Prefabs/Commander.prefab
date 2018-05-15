@@ -136,13 +136,22 @@ MonoBehaviour:
   zoomSpeed: 10
   minionPrefab: {fileID: 1531298467342816, guid: c504b4accb800bf44b2e0e2105ce34d6,
     type: 2}
+  fighterPrefab: {fileID: 1128491927958224, guid: 7bde852a00984af4a8d29c5f661cab5a,
+    type: 2}
   movementMask:
     serializedVersion: 2
     m_Bits: 256
   resourceMask:
     serializedVersion: 2
     m_Bits: 512
-  oreCount: 0
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  oreCount: 50
+  goldCount: 50
+  healthUpgradeCount: 0
+  speedUpgradeCount: 0
+  damageUpgradeCount: 0
 --- !u!114 &114973558432423840
 MonoBehaviour:
   m_ObjectHideFlags: 1

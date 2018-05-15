@@ -8,6 +8,8 @@ TagManager:
   - Red
   - Blue
   - Minion
+  - Fire
+  - Base
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - 
   - Ground
   - Resource
-  - 
+  - Attackable
   - 
   - 
   - 

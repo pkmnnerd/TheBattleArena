@@ -2,15 +2,16 @@
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine.AI;
 
 public class Health : NetworkBehaviour
 {
-
-    public const int maxHealth = 100;
+    [SyncVar]
+    public int maxHealth = 100;
     public bool destroyOnDeath;
 
     [SyncVar(hook = "OnChangeHealth")]
-    public int currentHealth = maxHealth;
+    public int currentHealth = 100;
 
     public RectTransform healthBar;
 
@@ -48,7 +49,12 @@ public class Health : NetworkBehaviour
 
     void OnChangeHealth(int currentHealth)
     {
-        healthBar.sizeDelta = new Vector2(currentHealth, healthBar.sizeDelta.y);
+        healthBar.sizeDelta = new Vector2(currentHealth *100 / maxHealth, healthBar.sizeDelta.y);
+
+        if (isLocalPlayer && gameObject.GetComponent<FpsPlayerController>() != null)
+        {
+            gameObject.GetComponent<FpsPlayerController>().UpdateHealth(currentHealth);
+        }
     }
 
     [ClientRpc]
@@ -56,17 +62,13 @@ public class Health : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            // Set the spawn point to origin as a default value
-            Vector3 spawnPoint = Vector3.zero;
-
-            // If there is a spawn point array and the array is not empty, pick one at random
-            if (spawnPoints != null && spawnPoints.Length > 0)
+            if (gameObject.GetComponent<FpsPlayerController>() != null)
             {
-                spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
-            }
+                int team = gameObject.GetComponent<FpsPlayerController>().team;
 
-            // Set the player’s position to the chosen spawn point
-            transform.position = spawnPoint;
+                gameObject.GetComponent<NavMeshAgent>().Warp(new Vector3(0, 0, (team*2-1)*60));
+            }
         }
     }
+
 }

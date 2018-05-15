@@ -8,14 +8,18 @@ public class MinionController : NetworkBehaviour {
 
     [SyncVar]
     public int team;
+    [SyncVar]
     public string target;
+    [SyncVar]
+    public GameObject targetObj;
+    [SyncVar]
     public Vector3 dest;
     //0 idle, 1 move, 2 action, 3 move to base
     public int mode = 0;
     private float time = 0;
     [SyncVar]
     public Vector3 baseLocation;
-    //0 nothing, 1 rock
+    //0 nothing, 1 rock, 2 gold
     public int resourceType = 0;
     public CommanderController commander;
 
@@ -70,17 +74,26 @@ public class MinionController : NetworkBehaviour {
                 {
                     resourceType = 1;
                 }
+                if (target.Equals("Gold"))
+                {
+                    resourceType = 2;
+                }
                 dest = baseLocation;
                 transform.GetComponent<NavMeshAgent>().SetDestination(baseLocation);
+                CmdCollectResource();
                 mode = 3;
             }
         } else if (mode == 3)
         {
             if (Vector3.Distance(transform.position, dest) < 3)
             {
-                if (target.Equals("Rock"))
+                if (targetObj.GetComponent<ResourceScript>().resourceType == 1)
                 {
                     commander.incrementOre();
+                }
+                if (targetObj.GetComponent<ResourceScript>().resourceType == 2)
+                {
+                    commander.incrementGold();
                 }
                 resourceType = 0;
                 mode = 1;
@@ -91,16 +104,24 @@ public class MinionController : NetworkBehaviour {
         }
     }
 
-    public void SetTarget(string target, Vector3 dest)
+    public void SetTarget(string target, Vector3 dest, GameObject targetObj)
     {
-        this.target = target;
-        this.dest = dest;
+        CmdUpdateTarget(target, dest, targetObj);
     }
 
 
     [Command]
-    void CmdUpdateTarget()
+    void CmdUpdateTarget(string target, Vector3 dest, GameObject targetObj)
     {
+        this.target = target;
+        this.dest = dest;
+        this.targetObj = targetObj;
+    }
+
+    [Command]
+    void CmdCollectResource()
+    {
+        targetObj.GetComponent<ResourceScript>().DecrementResource();
     }
     
 }

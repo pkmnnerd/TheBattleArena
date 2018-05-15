@@ -355,7 +355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 1
   m_SendInterval: 0.1
-  m_SyncRotationAxis: 7
+  m_SyncRotationAxis: 0
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
   m_MovementTheshold: 0.001
@@ -375,6 +375,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  target: 
+  targetObj: {fileID: 0}
+  dest: {x: 0, y: 0, z: 0}
+  mode: 0
+  baseLocation: {x: 0, y: 0, z: 0}
+  resourceType: 0
+  commander: {fileID: 0}
 --- !u!114 &114328545960020366
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -464,22 +471,22 @@ MonoBehaviour:
   m_SceneId:
     m_Value: 0
   m_AssetId:
-    i0: 134
-    i1: 148
-    i2: 8
-    i3: 150
-    i4: 153
-    i5: 0
-    i6: 34
-    i7: 196
-    i8: 56
-    i9: 251
-    i10: 251
-    i11: 184
-    i12: 222
-    i13: 126
-    i14: 80
-    i15: 26
+    i0: 197
+    i1: 4
+    i2: 180
+    i3: 172
+    i4: 203
+    i5: 128
+    i6: 11
+    i7: 244
+    i8: 75
+    i9: 46
+    i10: 14
+    i11: 33
+    i12: 5
+    i13: 206
+    i14: 52
+    i15: 214
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
 --- !u!114 &114967030635049534

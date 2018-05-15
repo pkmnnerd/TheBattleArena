@@ -28,9 +28,9 @@ GameObject:
   - component: {fileID: 195292297341773948}
   - component: {fileID: 114526244672041462}
   - component: {fileID: 114584263077820762}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FPSPlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 224288297545967614}
   - component: {fileID: 222986265241800480}
   - component: {fileID: 114493407800019066}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   - component: {fileID: 224784757832593530}
   - component: {fileID: 222819297873652752}
   - component: {fileID: 114902400959852164}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Foreground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,13 +81,13 @@ GameObject:
   - component: {fileID: 114094025401559602}
   - component: {fileID: 114477413252338540}
   - component: {fileID: 114970228652320294}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Healthbar Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1622308980406792
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4153824343714842}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bullet Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 20895858118850938}
   - component: {fileID: 124036047798429236}
   - component: {fileID: 81762865502057864}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 4927188535937464}
   - component: {fileID: 33859443918889438}
   - component: {fileID: 23574622233938138}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 33288948138907634}
   - component: {fileID: 65432697088361174}
   - component: {fileID: 23413164965854382}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Visor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -547,9 +547,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1588fd64fc8eff04193a6374c9915295, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 100
   destroyOnDeath: 0
   currentHealth: 100
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 224784757832593530}
 --- !u!114 &114887898605832480
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -562,11 +563,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  flashPrefab: {fileID: 1409306447727456, guid: bc5ceaec2f715e642b13119cdef576d8,
+    type: 2}
   bulletPrefab: {fileID: 1513113821152016, guid: d4b2ae4dfc9d55440bb34a2d7574856c,
     type: 2}
   bulletSpawn: {fileID: 4153824343714842}
   sensitivity: 1
   cameraRotationLimit: 85
+  speed: 5
+  baseAttackMultipler: 1
 --- !u!114 &114902400959852164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -600,7 +605,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1508003489051806}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4a08e0f1a4479f4b8101704a3bb7418, type: 3}
   m_Name: 

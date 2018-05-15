@@ -8,6 +8,7 @@ public class FpsPlayerController : NetworkBehaviour
     [SyncVar]
     public int team = 0;
 
+    public GameObject flashPrefab;
     public GameObject bulletPrefab;
     public Transform bulletSpawn;
     public float sensitivity = 1.0f;
@@ -17,6 +18,12 @@ public class FpsPlayerController : NetworkBehaviour
     private float cameraRotationX = 0f;
     private float currentCameraRotationX = 0f;
 
+    [SyncVar]
+    public int speed = 5;
+
+    [SyncVar]
+    public int baseAttackMultipler = 1;
+
     void Start()
     {
         if (isLocalPlayer)
@@ -25,10 +32,12 @@ public class FpsPlayerController : NetworkBehaviour
             GetComponentInChildren<AudioListener>().enabled = true;
             Cursor.visible = false;
             GameObject portrait = GameObject.Find("Portrait");
+            portrait.GetComponent<RectTransform>().localScale = new Vector3(.4f * Screen.height / Screen.width, .4f, 1);
             if (team == 0)
                 portrait.GetComponent<Image>().color = Color.red;
             else
                 portrait.GetComponent<Image>().color = Color.blue;
+            GameObject.Find("CanvasCommander").SetActive(false);
         }
     }
 
@@ -47,16 +56,35 @@ public class FpsPlayerController : NetworkBehaviour
             CmdColorChange(transform.gameObject, Color.blue);
         }
 
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 5.0f;
-        var z = Input.GetAxis("Vertical") * Time.deltaTime * 5.0f;
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
+        var z = Input.GetAxis("Vertical") * Time.deltaTime * speed;
         
         transform.Translate(x, 0, z);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    CmdFire();
+        //}
+
+        if (Input.GetMouseButtonDown(0))
         {
-            CmdFire();
+            Ray ray = GetComponentInChildren<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            RaycastHit hit;
+
+            var flash = (GameObject)Instantiate(
+            flashPrefab,
+            bulletSpawn.position,
+            bulletSpawn.rotation);
+            
+            NetworkServer.Spawn(flash);
+
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                Debug.Log(hit.collider.transform.gameObject);
+                CmdShoot(hit.collider.transform.gameObject);
+            }
         }
-        
+
 
         float _yRot = Input.GetAxisRaw("Mouse X");
 
@@ -96,6 +124,20 @@ public class FpsPlayerController : NetworkBehaviour
         Destroy(bullet, 2.0f);
     }
 
+    [Command]
+    void CmdShoot(GameObject hit)
+    {
+        Debug.Log(hit);
+        if (hit.GetComponent<Health>() != null)
+        {
+            hit.GetComponent<Health>().TakeDamage(10);
+        }
+        if (hit.GetComponent<BaseController>() != null)
+        {
+            hit.GetComponent<BaseController>().TakeDamage(10*baseAttackMultipler);
+        }
+    }
+
 
     private void FixedUpdate()
     {
@@ -133,6 +175,13 @@ public class FpsPlayerController : NetworkBehaviour
         obj.GetComponent<MeshRenderer>().material.color = toChange;
     }
 
+    public void UpdateHealth(int currentHealth)
+    {
+        if (isLocalPlayer)
+        {
+            GameObject.Find("HealthText").GetComponent<Text>().text = "Health: " + currentHealth + "/" + gameObject.GetComponent<Health>().maxHealth;
+        }
+    }
 
 }
 
