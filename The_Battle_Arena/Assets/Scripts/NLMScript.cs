@@ -41,6 +41,11 @@ public class NLMScript : NetworkLobbyManager {
         }
         Debug.Log(networkAddress);
         StartClient();
+    }
+
+    public override void OnLobbyClientConnect(NetworkConnection conn)
+    {
+
         GameObject.Find("LobbyManager").GetComponent<LobbyScript>().SwitchToNameSelect();
     }
 

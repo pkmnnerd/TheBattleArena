@@ -28,11 +28,11 @@ public class FpsPlayerController : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            GetComponentInChildren<Camera>().enabled = true;
-            GetComponentInChildren<AudioListener>().enabled = true;
+            transform.Find("Main Camera").gameObject.SetActive(true);
             Cursor.visible = false;
             GameObject portrait = GameObject.Find("Portrait");
-            portrait.GetComponent<RectTransform>().localScale = new Vector3(.4f * Screen.height / Screen.width, .4f, 1);
+            portrait.GetComponent<RectTransform>().localScale = new Vector3(Screen.height * 0.2f / 100, Screen.height * 0.2f / 100, 1);
+            portrait.GetComponent<RectTransform>().position = new Vector3(Screen.height * 0.2f / 2, Screen.height * 0.2f / 2, 0);
             if (team == 0)
                 portrait.GetComponent<Image>().color = Color.red;
             else
