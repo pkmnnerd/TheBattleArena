@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.Collections;
 
 //https://github.com/Brackeys/MultiplayerFPS-Tutorial/blob/master/MultiplayerFPS/Assets/Scripts/PlayerMotor.cs
 public class FpsPlayerController : NetworkBehaviour
@@ -8,8 +9,13 @@ public class FpsPlayerController : NetworkBehaviour
     [SyncVar]
     public int team = 0;
 
+
+    public Sprite playerRed;
+    public Sprite playerBlue;
+
     public GameObject flashPrefab;
     public GameObject bulletPrefab;
+    public GameObject beamPrefab;
     public Transform bulletSpawn;
     public float sensitivity = 1.0f;
 
@@ -19,7 +25,7 @@ public class FpsPlayerController : NetworkBehaviour
     private float currentCameraRotationX = 0f;
 
     [SyncVar]
-    public int speed = 5;
+    public float speed = 5;
 
     [SyncVar]
     public int baseAttackMultipler = 1;
@@ -34,12 +40,41 @@ public class FpsPlayerController : NetworkBehaviour
             portrait.GetComponent<RectTransform>().localScale = new Vector3(Screen.height * 0.2f / 100, Screen.height * 0.2f / 100, 1);
             portrait.GetComponent<RectTransform>().position = new Vector3(Screen.height * 0.2f / 2, Screen.height * 0.2f / 2, 0);
             if (team == 0)
-                portrait.GetComponent<Image>().color = Color.red;
+                portrait.GetComponent<Image>().sprite = playerRed;
             else
-                portrait.GetComponent<Image>().color = Color.blue;
+                portrait.GetComponent<Image>().sprite = playerBlue;
             GameObject.Find("CanvasCommander").SetActive(false);
+            transform.Find("Healthbar Canvas").gameObject.SetActive(false);
         }
     }
+
+    [Command]
+    void CmdSpawnFlash()
+    {
+        var flash = (GameObject)Instantiate(
+           flashPrefab,
+           bulletSpawn.position,
+           bulletSpawn.rotation);
+
+        NetworkServer.Spawn(flash);
+        Destroy(flash, 2f);
+    }
+
+    [Command]
+    void CmdSpawnLaser(Vector3[] positions)
+    {
+        var beam = (GameObject)Instantiate(
+        beamPrefab,
+        bulletSpawn.position,
+        bulletSpawn.rotation);
+
+        beam.GetComponent<BeamController>().point1 = positions[0];
+        beam.GetComponent<BeamController>().point2 = positions[1];
+        NetworkServer.Spawn(beam);
+        
+        Destroy(beam, 0.1f);
+    }
+
 
     void Update()
     {
@@ -68,21 +103,34 @@ public class FpsPlayerController : NetworkBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            transform.GetComponent<AudioSource>().Play();
+
             Ray ray = GetComponentInChildren<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
             RaycastHit hit;
 
-            var flash = (GameObject)Instantiate(
-            flashPrefab,
-            bulletSpawn.position,
-            bulletSpawn.rotation);
-            
-            NetworkServer.Spawn(flash);
+            CmdSpawnFlash();
 
-            if (Physics.Raycast(ray, out hit, 100))
+            if (Physics.Raycast(ray, out hit, 1000))
             {
-                Debug.Log(hit.collider.transform.gameObject);
-                CmdShoot(hit.collider.transform.gameObject);
+                Vector3[] positions = new Vector3[2];
+                positions[0] = transform.Find("GunParent").Find("Bullet Spawn").position;
+                positions[1] = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                Debug.Log(positions[0]);
+                Debug.Log(positions[1]);
+
+                CmdSpawnLaser(positions);
+
+                float baseDamage = Mathf.Clamp(-Vector3.Distance(transform.position, hit.point) / 6 + (75f / 9f)+15, 0, 15);
+
+                Debug.Log(baseDamage);
+                if (hit.collider != null)
+                {
+                    CmdShoot(hit.collider.transform.gameObject, (int)baseDamage);
+                }
             }
+            
+            
+
         }
 
 
@@ -125,16 +173,17 @@ public class FpsPlayerController : NetworkBehaviour
     }
 
     [Command]
-    void CmdShoot(GameObject hit)
+    void CmdShoot(GameObject hit, int baseDamage)
     {
+
         Debug.Log(hit);
         if (hit.GetComponent<Health>() != null)
         {
-            hit.GetComponent<Health>().TakeDamage(10);
+            hit.GetComponent<Health>().TakeDamage(baseDamage);
         }
         if (hit.GetComponent<BaseController>() != null)
         {
-            hit.GetComponent<BaseController>().TakeDamage(10*baseAttackMultipler);
+            hit.GetComponent<BaseController>().TakeDamage(baseDamage*baseAttackMultipler);
         }
     }
 
@@ -160,7 +209,10 @@ public class FpsPlayerController : NetworkBehaviour
 
             //Apply our rotation to the transform of our camera
             cam.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
+
+            transform.Find("GunParent").localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
         }
+
     }
 
     [Command]
@@ -179,7 +231,7 @@ public class FpsPlayerController : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            GameObject.Find("HealthText").GetComponent<Text>().text = "Health: " + currentHealth + "/" + gameObject.GetComponent<Health>().maxHealth;
+            GameObject.Find("HealthText").GetComponent<Text>().text = "HP: " + currentHealth + "/" + gameObject.GetComponent<Health>().maxHealth;
         }
     }
 

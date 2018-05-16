@@ -16,6 +16,13 @@ public class CommanderController : NetworkBehaviour {
     public float maxHeight;
     public float zoomSpeed;
 
+    public Sprite commanderRed;
+    public Sprite commanderBlue;
+    public Sprite minionRed;
+    public Sprite minionBlue;
+    public Sprite fighterRed;
+    public Sprite fighterBlue;
+
     bool mouseDown = false;
     GameObject selectionPanel;
     Vector3 selectionStart;
@@ -47,9 +54,18 @@ public class CommanderController : NetworkBehaviour {
             portrait.GetComponent<RectTransform>().localScale = new Vector3(Screen.height * 0.2f / 100, Screen.height * 0.2f / 100, 1);
             portrait.GetComponent<RectTransform>().position = new Vector3(Screen.height * 0.2f / 2, Screen.height * 0.2f / 2, 0);
             if (team == 0)
-                portrait.GetComponent<Image>().color = Color.red;
+            {
+                portrait.GetComponent<Image>().sprite = commanderRed;
+
+                GameObject.Find("Minion Button").GetComponent<Image>().sprite = minionRed;
+                GameObject.Find("Fighter Button").GetComponent<Image>().sprite = fighterRed;
+            }
             else
-                portrait.GetComponent<Image>().color = Color.blue;
+            {
+                portrait.GetComponent<Image>().sprite = commanderBlue;
+                GameObject.Find("Minion Button").GetComponent<Image>().sprite = minionBlue;
+                GameObject.Find("Fighter Button").GetComponent<Image>().sprite = fighterBlue;
+            }
             canvas = GameObject.Find("CanvasCommander").GetComponent<Canvas>();
             GameObject.Find("CanvasFPS").SetActive(false);
         }
@@ -61,6 +77,8 @@ public class CommanderController : NetworkBehaviour {
         {
             return;
         }
+
+        selected.RemoveAll(item => item == null);
 
         float deltaZoom = Input.GetAxis("Mouse ScrollWheel");
         cameraHeight -= deltaZoom * zoomSpeed;
@@ -181,6 +199,8 @@ public class CommanderController : NetworkBehaviour {
                             Debug.Log("Hit attackable");
                             fighterController.SetTarget(hit.collider.name, hit.point, hit.collider.transform.gameObject);
                             fighterController.mode = 2;
+                            fighterController.attackMinions = false;
+                            fighterController.attackPlayers = false;
                             fighterController.commander = this;
                             // change this / may not be needed
                             minion.GetComponent<NavMeshAgent>().SetDestination(hit.point);
@@ -191,6 +211,8 @@ public class CommanderController : NetworkBehaviour {
                             fighterController.SetTarget("", hit.point, null);
                             minion.GetComponent<NavMeshAgent>().SetDestination(hit.point);
                             fighterController.mode = 1;
+                            fighterController.attackMinions = false;
+                            fighterController.attackPlayers = false;
                         }
                     }
                 }
@@ -198,25 +220,71 @@ public class CommanderController : NetworkBehaviour {
             }
         }
 
-        if (Input.GetKeyDown("1") && oreCount >= 5)
+        // attack minions
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            oreCount = oreCount - 5;
-            canvas.transform.Find("OreCount").GetComponent<Text>().text = "Ore Count: " + oreCount;
+            GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
+
+            foreach (GameObject minion in selected)
+            {
+                if (minion.GetComponent<FighterController>() != null)
+                {
+                    FighterController fighterController = minion.GetComponent<FighterController>();
+
+                    if (fighterController.team == team)
+                    {
+                        fighterController.mode = 3;
+                        fighterController.attackMinions = true;
+                        fighterController.attackPlayers = false;
+                    }
+                }
+
+            }
+        }
+
+        // attack players
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
+
+            foreach (GameObject minion in selected)
+            {
+                if (minion.GetComponent<FighterController>() != null)
+                {
+                    FighterController fighterController = minion.GetComponent<FighterController>();
+
+                    if (fighterController.team == team)
+                    {
+                        fighterController.mode = 4;
+                        fighterController.attackMinions = false;
+                        fighterController.attackPlayers = true;
+                    }
+                }
+
+            }
+        }
+
+        if (Input.GetKeyDown("1") && oreCount >= 3)
+        {
+            oreCount = oreCount - 3;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
             CmdSpawnMinion(team);
         }
 
 
-        if (Input.GetKeyDown("2") && oreCount >= 5)
+        if (Input.GetKeyDown("2") && oreCount >= 5 && goldCount >= 1)
         {
             oreCount = oreCount - 5;
-            canvas.transform.Find("OreCount").GetComponent<Text>().text = "Ore Count: " + oreCount;
+            goldCount = goldCount - 1;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" +  goldCount;
             CmdSpawnFighter(team);
         }
 
         // player health
         if (Input.GetKeyDown("3") && healthUpgradeCount <= 2)
         {
-            if (oreCount >= 100)
+            if (oreCount >= 10 && goldCount >=5)
             {
                 GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
@@ -224,18 +292,21 @@ public class CommanderController : NetworkBehaviour {
                 {
                     if (player.GetComponent<FpsPlayerController>().team == team)
                     {
-                        CmdUpgradeHealth(player, 100);
+                        CmdUpgradeHealth(player, 50);
                     }
                 }
-                oreCount -= 100;
+                oreCount -= 10;
+                goldCount -= 5;
+                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
                 healthUpgradeCount++; 
             }
         }
 
         // speed
-        if (Input.GetKeyDown("4") && speedUpgradeCount <= 1)
+        if (Input.GetKeyDown("4") && speedUpgradeCount <= 2)
         {
-            if (oreCount >= 100)
+            if (oreCount >= 5 && goldCount >= 10)
             {
                 GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
@@ -243,10 +314,13 @@ public class CommanderController : NetworkBehaviour {
                 {
                     if (player.GetComponent<FpsPlayerController>().team == team)
                     {
-                        CmdUpgradeSpeed(player, 5);
+                        CmdUpgradeSpeed(player, 1.2f);
                     }
                 }
-                oreCount -= 100;
+                oreCount -= 5;
+                goldCount -= 10;
+                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
                 speedUpgradeCount++;
             }
         }
@@ -254,7 +328,7 @@ public class CommanderController : NetworkBehaviour {
         // damage against base
         if (Input.GetKeyDown("5") && damageUpgradeCount <= 2)
         {
-            if (oreCount >= 100)
+            if (oreCount >= 20 && goldCount >= 20)
             {
                 GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
@@ -265,7 +339,10 @@ public class CommanderController : NetworkBehaviour {
                         CmdUpgradeBaseMultiplier(player, 3);
                     }
                 }
-                oreCount -= 100;
+                oreCount -= 20;
+                goldCount -= 20;
+                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
                 damageUpgradeCount++;
             }
         }
@@ -273,7 +350,7 @@ public class CommanderController : NetworkBehaviour {
         // heal base
         if (Input.GetKeyDown("6"))
         {
-            if (oreCount >= 10)
+            if (oreCount >= 5)
             {
                 GameObject[] bases = GameObject.FindGameObjectsWithTag("Base");
 
@@ -284,7 +361,9 @@ public class CommanderController : NetworkBehaviour {
                         CmdHealBase(baseObj, 300);
                     }
                 }
-                oreCount -= 10;
+                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
+                oreCount -= 5;
             }
         }
     }
@@ -296,11 +375,11 @@ public class CommanderController : NetworkBehaviour {
     {
         var minion = (GameObject)Instantiate(
             minionPrefab,
-            new Vector3(Random.Range(-3f,3f),0,(mTeam*2-1)* 60 + Random.Range(-1f, 1f)),
+            new Vector3(Random.Range(-3f,3f),9,(mTeam*2-1)* 110 + Random.Range(-1f, 1f)),
             Quaternion.identity);
         MinionController minionController = minion.GetComponent<MinionController>();
         minionController.team = mTeam;
-        minionController.baseLocation = new Vector3(0, 0, (mTeam * 2 - 1) * 60);
+        minionController.baseLocation = new Vector3(0, 9, (mTeam * 2 - 1) * 110);
         if (mTeam == 0)
         {
             minion.GetComponent<MeshRenderer>().material.color = Color.red;
@@ -319,11 +398,11 @@ public class CommanderController : NetworkBehaviour {
     {
         var fighter = (GameObject)Instantiate(
             fighterPrefab,
-            new Vector3(Random.Range(-3f, 3f), 0, (mTeam * 2 - 1) * 60 + Random.Range(-1f, 1f)),
+            new Vector3(Random.Range(-3f, 3f), 9, (mTeam * 2 - 1) * 110 + Random.Range(-1f, 1f)),
             Quaternion.identity);
         FighterController fighterController = fighter.GetComponent<FighterController>();
         fighterController.team = mTeam;
-        fighterController.baseLocation = new Vector3(0, 0, (mTeam * 2 - 1) * 60);
+        fighterController.baseLocation = new Vector3(0, 9, (mTeam * 2 - 1) * 110);
         if (mTeam == 0)
         {
             fighterController.GetComponent<MeshRenderer>().material.color = Color.red;
@@ -347,9 +426,9 @@ public class CommanderController : NetworkBehaviour {
     }
 
     [Command]
-    void CmdUpgradeSpeed(GameObject player, int upgradeAmount)
+    void CmdUpgradeSpeed(GameObject player, float upgradeAmount)
     {
-        player.GetComponent<FpsPlayerController>().speed += upgradeAmount;
+        player.GetComponent<FpsPlayerController>().speed *= upgradeAmount;
     }
 
     [Command]
@@ -367,13 +446,13 @@ public class CommanderController : NetworkBehaviour {
     public void incrementOre()
     {
         oreCount++;
-        canvas.transform.Find("OreCount").GetComponent<Text>().text = "Ore Count: " + oreCount;
+        canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
     }
 
     public void incrementGold()
     {
         goldCount++;
-        canvas.transform.Find("GoldCount").GetComponent<Text>().text = "Gold Count: " + goldCount;
+        canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
     }
 }
 

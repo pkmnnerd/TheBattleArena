@@ -80,7 +80,7 @@ public class MinionController : NetworkBehaviour {
                 }
                 dest = baseLocation;
                 transform.GetComponent<NavMeshAgent>().SetDestination(baseLocation);
-                CmdCollectResource();
+                //CmdCollectResource();
                 mode = 3;
             }
         } else if (mode == 3)
@@ -118,10 +118,10 @@ public class MinionController : NetworkBehaviour {
         this.targetObj = targetObj;
     }
 
-    [Command]
-    void CmdCollectResource()
-    {
-        targetObj.GetComponent<ResourceScript>().DecrementResource();
-    }
+    //[Command]
+    //void CmdCollectResource()
+    //{
+    //    targetObj.GetComponent<ResourceScript>().DecrementResource();
+    //}
     
 }

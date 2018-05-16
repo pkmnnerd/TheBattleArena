@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class LobbyScript : MonoBehaviour {
 
@@ -96,6 +97,11 @@ public class LobbyScript : MonoBehaviour {
 
     }
 
+    public void Back()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
     private Button GetButtonByRoleNum(int roleNum)
     {
         Button buttonToChange;
@@ -163,5 +169,5 @@ public class LobbyScript : MonoBehaviour {
             }
         }
     }
-
+    
 }

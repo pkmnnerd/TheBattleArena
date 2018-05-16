@@ -132,8 +132,14 @@ MonoBehaviour:
     type: 2}
   canvas: {fileID: 0}
   minHeight: 3
-  maxHeight: 30
+  maxHeight: 40
   zoomSpeed: 10
+  commanderRed: {fileID: 21300000, guid: c4c99d1e1e8b2874a8ec079b5f9f45f2, type: 3}
+  commanderBlue: {fileID: 21300000, guid: 15df9e54862bc8f47a1b16a8357c928c, type: 3}
+  minionRed: {fileID: 21300000, guid: 60b2c3c986a218a42a80d4f63fda8f13, type: 3}
+  minionBlue: {fileID: 21300000, guid: 34325db49e4e6a64baebe6dd408ddb3a, type: 3}
+  fighterRed: {fileID: 21300000, guid: 2c24c7c4122457642b08269cfc464db8, type: 3}
+  fighterBlue: {fileID: 21300000, guid: 3124015cbd5552c4a95430823db85253, type: 3}
   minionPrefab: {fileID: 1531298467342816, guid: c504b4accb800bf44b2e0e2105ce34d6,
     type: 2}
   fighterPrefab: {fileID: 1128491927958224, guid: 7bde852a00984af4a8d29c5f661cab5a,
@@ -147,8 +153,8 @@ MonoBehaviour:
   attackMask:
     serializedVersion: 2
     m_Bits: 1024
-  oreCount: 50
-  goldCount: 50
+  oreCount: 500
+  goldCount: 500
   healthUpgradeCount: 0
   speedUpgradeCount: 0
   damageUpgradeCount: 0

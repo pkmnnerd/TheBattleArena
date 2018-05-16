@@ -66,7 +66,7 @@ public class Health : NetworkBehaviour
             {
                 int team = gameObject.GetComponent<FpsPlayerController>().team;
 
-                gameObject.GetComponent<NavMeshAgent>().Warp(new Vector3(0, 0, (team*2-1)*60));
+                gameObject.GetComponent<NavMeshAgent>().Warp(new Vector3(0, 9, (team*2-1)*110));
             }
         }
     }
