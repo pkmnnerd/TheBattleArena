@@ -14,7 +14,7 @@ public class HomeCameraController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        transform.Translate(0.2f, 0, 0);
+        transform.Translate(0.1f, 0, 0);
         transform.LookAt(new Vector3(0, 0, 0));
     }
 }

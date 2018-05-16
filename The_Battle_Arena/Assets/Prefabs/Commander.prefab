@@ -134,6 +134,7 @@ MonoBehaviour:
   minHeight: 3
   maxHeight: 40
   zoomSpeed: 10
+  edgeCam: 1
   commanderRed: {fileID: 21300000, guid: c4c99d1e1e8b2874a8ec079b5f9f45f2, type: 3}
   commanderBlue: {fileID: 21300000, guid: 15df9e54862bc8f47a1b16a8357c928c, type: 3}
   minionRed: {fileID: 21300000, guid: 60b2c3c986a218a42a80d4f63fda8f13, type: 3}

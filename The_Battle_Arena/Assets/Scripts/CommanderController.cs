@@ -15,6 +15,7 @@ public class CommanderController : NetworkBehaviour {
     public float minHeight;
     public float maxHeight;
     public float zoomSpeed;
+    public bool edgeCam;
 
     public Sprite commanderRed;
     public Sprite commanderBlue;
@@ -57,23 +58,23 @@ public class CommanderController : NetworkBehaviour {
             {
                 portrait.GetComponent<Image>().sprite = commanderRed;
 
-                GameObject.Find("Minion Button").GetComponent<Image>().sprite = minionRed;
-                GameObject.Find("Fighter Button").GetComponent<Image>().sprite = fighterRed;
+                GameObject.Find("Minion Image").GetComponent<Image>().sprite = minionRed;
+                GameObject.Find("Fighter Image").GetComponent<Image>().sprite = fighterRed;
             }
             else
             {
                 portrait.GetComponent<Image>().sprite = commanderBlue;
-                GameObject.Find("Minion Button").GetComponent<Image>().sprite = minionBlue;
-                GameObject.Find("Fighter Button").GetComponent<Image>().sprite = fighterBlue;
+                GameObject.Find("Minion Image").GetComponent<Image>().sprite = minionBlue;
+                GameObject.Find("Fighter Image").GetComponent<Image>().sprite = fighterBlue;
             }
             canvas = GameObject.Find("CanvasCommander").GetComponent<Canvas>();
             GameObject.Find("CanvasFPS").SetActive(false);
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (!isLocalPlayer)
+    }
+
+    // Update is called once per frame
+    void Update() {
+        if (!isLocalPlayer)
         {
             return;
         }
@@ -91,23 +92,45 @@ public class CommanderController : NetworkBehaviour {
             float mouseY = Input.GetAxis("Mouse Y");
             transform.Translate(new Vector3(mouseY, 0, -mouseX));
         }
+        else if (edgeCam)
+        {
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+            if (Input.mousePosition.x <= 10 && mouseX < 0)
+            {
+                transform.Translate(new Vector3(0, 0, mouseX * 0.5f));
+            }
+            if (Input.mousePosition.x >= Screen.width - 10 && mouseX > 0)
+            {
+                transform.Translate(new Vector3(0, 0, mouseX * 0.5f));
+            }
+            if (Input.mousePosition.y <= 10 & mouseY < 0)
+            {
+                transform.Translate(new Vector3(-mouseY * 0.5f, 0, 0));
+            }
+            if (Input.mousePosition.y >= Screen.height - 10 & mouseY > 0)
+            {
+                transform.Translate(new Vector3(-mouseY * 0.5f, 0, 0));
+            }
+        }
         if (Input.GetMouseButton(0))
         {
             if (mouseDown == false)
             {
                 selectionPanel = Instantiate(selectionPrefab, Input.mousePosition, Quaternion.identity, canvas.transform);
+                selectionPanel.transform.SetAsFirstSibling();
                 selectionPanel.transform.localScale = new Vector3(0, 0, 1);
                 selectionPanel.transform.position = Input.mousePosition;
                 selectionStart = Input.mousePosition;
                 mouseDown = true;
                 foreach (GameObject minion in selected)
                 {
-                    minion.GetComponent<MeshRenderer>().material.color = new Color((1 - team), 0f,team, 1);
+                    minion.GetComponent<MeshRenderer>().material.color = new Color((1 - team), 0f, team, 1);
                 }
                 selected.Clear();
             } else
             {
-                selectionPanel.transform.localScale = new Vector3(Input.mousePosition.x - selectionStart.x, Input.mousePosition.y - selectionStart.y, 0)/1000;
+                selectionPanel.transform.localScale = new Vector3(Input.mousePosition.x - selectionStart.x, Input.mousePosition.y - selectionStart.y, 0) / 1000;
                 selectionPanel.transform.position = (Input.mousePosition + selectionStart) / 2;
 
             }
@@ -117,7 +140,7 @@ public class CommanderController : NetworkBehaviour {
             {
 
                 GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
-                
+
 
                 Ray ray = GetComponentInChildren<Camera>().ScreenPointToRay(selectionStart);
                 RaycastHit hit;
@@ -138,25 +161,25 @@ public class CommanderController : NetworkBehaviour {
                                 && ((minion.GetComponent<MinionController>() != null && minion.GetComponent<MinionController>().team == team) || (minion.GetComponent<FighterController>() != null && minion.GetComponent<FighterController>().team == team)))
                             {
                                 selected.Add(minion);
-                                minion.GetComponent<MeshRenderer>().material.color = new Color(0.3f*(1-team),0f,0.3f*team,1);
+                                minion.GetComponent<MeshRenderer>().material.color = new Color(0.3f * (1 - team), 0f, 0.3f * team, 1);
                             }
-                                
+
                         }
                     }
                 }
 
 
 
-                    Destroy(selectionPanel);
+                Destroy(selectionPanel);
                 mouseDown = false;
             }
         }
-        
-        
+
+
         if (Input.GetMouseButtonDown(1))
         {
             GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
-            
+
             foreach (GameObject minion in selected)
             {
                 if (minion.GetComponent<MinionController>() != null) {
@@ -264,107 +287,143 @@ public class CommanderController : NetworkBehaviour {
             }
         }
 
-        if (Input.GetKeyDown("1") && oreCount >= 3)
+        if (Input.GetKeyDown("1"))
         {
-            oreCount = oreCount - 3;
-            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
-            CmdSpawnMinion(team);
+            SpawnMinion();
         }
 
 
-        if (Input.GetKeyDown("2") && oreCount >= 5 && goldCount >= 1)
+        if (Input.GetKeyDown("2"))
         {
-            oreCount = oreCount - 5;
-            goldCount = goldCount - 1;
-            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
-            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" +  goldCount;
-            CmdSpawnFighter(team);
+            SpawnFighter();
         }
 
         // player health
-        if (Input.GetKeyDown("3") && healthUpgradeCount <= 2)
+        if (Input.GetKeyDown("3"))
         {
-            if (oreCount >= 10 && goldCount >=5)
-            {
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-                foreach (GameObject player in players)
-                {
-                    if (player.GetComponent<FpsPlayerController>().team == team)
-                    {
-                        CmdUpgradeHealth(player, 50);
-                    }
-                }
-                oreCount -= 10;
-                goldCount -= 5;
-                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
-                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
-                healthUpgradeCount++; 
-            }
+            UpgradeHealth();
         }
 
         // speed
-        if (Input.GetKeyDown("4") && speedUpgradeCount <= 2)
+        if (Input.GetKeyDown("4"))
         {
-            if (oreCount >= 5 && goldCount >= 10)
-            {
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-                foreach (GameObject player in players)
-                {
-                    if (player.GetComponent<FpsPlayerController>().team == team)
-                    {
-                        CmdUpgradeSpeed(player, 1.2f);
-                    }
-                }
-                oreCount -= 5;
-                goldCount -= 10;
-                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
-                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
-                speedUpgradeCount++;
-            }
+            UpgradeSpeed();
         }
 
         // damage against base
-        if (Input.GetKeyDown("5") && damageUpgradeCount <= 2)
+        if (Input.GetKeyDown("5"))
         {
-            if (oreCount >= 20 && goldCount >= 20)
-            {
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-                foreach (GameObject player in players)
-                {
-                    if (player.GetComponent<FpsPlayerController>().team == team)
-                    {
-                        CmdUpgradeBaseMultiplier(player, 3);
-                    }
-                }
-                oreCount -= 20;
-                goldCount -= 20;
-                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
-                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
-                damageUpgradeCount++;
-            }
+            UpgradeDamage();
         }
 
         // heal base
         if (Input.GetKeyDown("6"))
         {
-            if (oreCount >= 5)
-            {
-                GameObject[] bases = GameObject.FindGameObjectsWithTag("Base");
+            RepairBase();   
+        }
+    }
 
-                foreach (GameObject baseObj in bases)
+    public void SpawnMinion()
+    {
+        if (oreCount >= 3) 
+        {
+            oreCount = oreCount - 3;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            CmdSpawnMinion(team);
+        }
+    }
+
+    public void SpawnFighter()
+    {
+        if (oreCount >= 5 && goldCount >= 1)
+        {
+            oreCount = oreCount - 5;
+            goldCount = goldCount - 1;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
+            CmdSpawnFighter(team);
+        }
+    }
+
+    public void UpgradeHealth()
+    {
+        if (healthUpgradeCount <= 2 && oreCount >= 10 && goldCount >= 5)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+            foreach (GameObject player in players)
+            {
+                if (player.GetComponent<FpsPlayerController>().team == team)
                 {
-                    if (baseObj.GetComponent<BaseController>().team == team)
-                    {
-                        CmdHealBase(baseObj, 300);
-                    }
+                    CmdUpgradeHealth(player, 50);
                 }
-                canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
-                canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
-                oreCount -= 5;
             }
+            oreCount -= 10;
+            goldCount -= 5;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
+            healthUpgradeCount++;
+        }
+    }
+
+    public void UpgradeSpeed()
+    {
+        if (speedUpgradeCount <= 2 && oreCount >= 5 && goldCount >= 10)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+            foreach (GameObject player in players)
+            {
+                if (player.GetComponent<FpsPlayerController>().team == team)
+                {
+                    CmdUpgradeSpeed(player, 1.2f);
+                }
+            }
+            oreCount -= 5;
+            goldCount -= 10;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
+            speedUpgradeCount++;
+        }
+    }
+
+    public void UpgradeDamage()
+    {
+        if (damageUpgradeCount <= 2 && oreCount >= 20 && goldCount >= 20)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+            foreach (GameObject player in players)
+            {
+                if (player.GetComponent<FpsPlayerController>().team == team)
+                {
+                    CmdUpgradeBaseMultiplier(player, 3);
+                }
+            }
+            oreCount -= 20;
+            goldCount -= 20;
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
+            damageUpgradeCount++;
+        }
+    }
+
+    public void RepairBase()
+    {
+        if (oreCount >= 5)
+        {
+            GameObject[] bases = GameObject.FindGameObjectsWithTag("Base");
+
+            foreach (GameObject baseObj in bases)
+            {
+                if (baseObj.GetComponent<BaseController>().team == team)
+                {
+                    CmdHealBase(baseObj, 300);
+                }
+            }
+            canvas.transform.Find("OreCount").GetComponent<Text>().text = "" + oreCount;
+            canvas.transform.Find("GoldCount").GetComponent<Text>().text = "" + goldCount;
+            oreCount -= 5;
         }
     }
 

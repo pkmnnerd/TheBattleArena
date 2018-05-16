@@ -1,11 +1,21 @@
 fileFormatVersion: 2
 guid: ce5f989bfba409142bc87659867a855f
-timeCreated: 1525489620
+timeCreated: 1526453619
 licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - selectionPrefab: {instanceID: 0}
+  - canvas: {instanceID: 0}
+  - commanderRed: {instanceID: 0}
+  - commanderBlue: {instanceID: 0}
+  - minionRed: {instanceID: 0}
+  - minionBlue: {instanceID: 0}
+  - fighterRed: {instanceID: 0}
+  - fighterBlue: {instanceID: 0}
+  - minionPrefab: {instanceID: 0}
+  - fighterPrefab: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
