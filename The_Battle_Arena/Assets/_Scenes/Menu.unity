@@ -1957,11 +1957,11 @@ MonoBehaviour:
 
     Right Click Enemy - Assigns Selected Fighters to Attack Enemy
 
-    A - Sets Selected Fighters to Automically Aquire and Attack Enemy Workers and
+    A - Sets Selected Fighters to Automatically Acquire and Attack Enemy Workers and
     Fighters in Range
 
-    S -  Sets Selected Fighters to Automically Aquire and Attack Enemy Players in
-    Range
+    S -  Sets Selected Fighters to Automatically Acquire and Attack Enemy Players
+    in Range
 
 '
 --- !u!222 &1062013590
